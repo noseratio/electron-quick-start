@@ -34,16 +34,16 @@ async function main() {
 
   // exit when all windows are closed and this promise is resolved
   const terminationPromise = new Promise(resolve => 
-    app.once('window-all-closed', () => resolve()));
+    app.once('window-all-closed', resolve));
 
   // we expect 'rendererReady' notification from Renderer
   const rendererPromise = new Promise(resolve =>
-    ipcMain.once('rendererReady', (event, args) => resolve(event.sender)));
+    ipcMain.once('rendererReady', resolve));
 
   // initiate creating the main window
   const mainWindowPromise = createMainWindow();
 
-  // await both the window to have been loaded 
+  // await both the window to have loaded 
   // and 'rendererReady' notification to have been fired,
   // while observing premature termination
   await Promise.race([

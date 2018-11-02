@@ -4,12 +4,11 @@ This is a fork of **[Minimal Electron Application](https://github.com/electron/e
 
 It uses promises and `async/await` extensively throughout the Main and Renderer initialization scripts. That provides some nice pseudo-synchronous, pseudo-linear code flow, which facilitates error handling and is easy to step through and debug.
 
-It also helps to delay the execution of the scripts inside the Renderer process, to give Chrome Debugger some extra time to attach to the Renderer. Without it, I could not hit the breakpoints I toggled on inside the Renderer. Apparently, I am not the only one experiencing this issue,
-e.g., here's [a similar question on SO](https://stackoverflow.com/questions/52844870/debugging-electron-renderer-process-with-vscode).
+It also helps to delay the execution of the scripts inside the Renderer process, to give Chrome Debugger some extra time to attach to the Renderer. Without it, I was unable not hit some breakpoints I set inside the Renderer. Apparently, I am not the only one experiencing this issue, e.g., here's [a similar question on SO](https://stackoverflow.com/questions/52844870/debugging-electron-renderer-process-with-vscode).
 
 ## How to run it
 
-To clone and run this repository you'll need [Git](https://git-scm.com) and [Node.js](https://nodejs.org/en/download/) (which comes with [npm](http://npmjs.com)) installed on your computer. I tested it under Windows, where I usually install everything with [Chocolatey](https://chocolatey.org/) from admin PowerShell, e.g.: 
+To clone and run this repository you'll need [Git](https://git-scm.com) and [Node.js](https://nodejs.org/en/download/) (which comes with [npm](http://npmjs.com)) installed on your computer. I tested this project under Windows, where I usually install everything with [Chocolatey](https://chocolatey.org/) from admin PowerShell, e.g.: 
 
 ```powershell
 choco install nodejs
