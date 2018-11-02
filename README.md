@@ -1,26 +1,24 @@
-# electron-quick-start
+# Noseratio's version of `electron-quick-start`
 
-**Clone and run for a quick way to see Electron in action.**
+This is a fork of **[Minimal Electron Application](https://github.com/electron/electron-quick-start)** to which I added some minimal IPC between Main and Renderer processes, as well as some debugging support based on **[Electron Debugging (Main and Renderer Process)](https://github.com/Microsoft/vscode-recipes/tree/master/Electron)** recipe.
 
-This is a minimal Electron application based on the [Quick Start Guide](https://electronjs.org/docs/tutorial/quick-start) within the Electron documentation.
+It uses promises and `async/await` extensively throughout the Main and Renderer initialization scripts. That provides some nice pseudo-synchronous, pseudo-linear code flow, which facilitates error handling and is easy to step through and debug.
 
-**Use this app along with the [Electron API Demos](https://electronjs.org/#get-started) app for API code examples to help you get started.**
+It also helps to delay the execution of the scripts inside the Renderer process, to give Chrome Debugger some extra time to attach to the Renderer. Without it, I could not hit the breakpoints I toggled on inside the Renderer. Apparently, I am not the only one experiencing this issue,
+e.g., here's [a similar question on SO](https://stackoverflow.com/questions/52844870/debugging-electron-renderer-process-with-vscode).
 
-A basic Electron application needs just these files:
+## How to run it
 
-- `package.json` - Points to the app's main file and lists its details and dependencies.
-- `main.js` - Starts the app and creates a browser window to render HTML. This is the app's **main process**.
-- `index.html` - A web page to render. This is the app's **renderer process**.
+To clone and run this repository you'll need [Git](https://git-scm.com) and [Node.js](https://nodejs.org/en/download/) (which comes with [npm](http://npmjs.com)) installed on your computer. I tested it under Windows, where I usually install everything with [Chocolatey](https://chocolatey.org/) from admin PowerShell, e.g.: 
 
-You can learn more about each of these components within the [Quick Start Guide](https://electronjs.org/docs/tutorial/quick-start).
+```powershell
+choco install nodejs
+```
+Then from your shell command line:
 
-## To Use
-
-To clone and run this repository you'll need [Git](https://git-scm.com) and [Node.js](https://nodejs.org/en/download/) (which comes with [npm](http://npmjs.com)) installed on your computer. From your command line:
-
-```bash
+```powershell
 # Clone this repository
-git clone https://github.com/electron/electron-quick-start
+git clone https://github.com/noseratio/electron-quick-start.git
 # Go into the repository
 cd electron-quick-start
 # Install dependencies
@@ -28,17 +26,21 @@ npm install
 # Run the app
 npm start
 ```
+## How to debug it with Visual Studio Code (both Main and Renderer):
 
-Note: If you're using Linux Bash for Windows, [see this guide](https://www.howtogeek.com/261575/how-to-run-graphical-linux-desktop-applications-from-windows-10s-bash-shell/) or use `node` from the command prompt.
-
-## Resources for Learning Electron
-
-- [electronjs.org/docs](https://electronjs.org/docs) - all of Electron's documentation
-- [electronjs.org/community#boilerplates](https://electronjs.org/community#boilerplates) - sample starter apps created by the community
-- [electron/electron-quick-start](https://github.com/electron/electron-quick-start) - a very basic starter Electron app
-- [electron/simple-samples](https://github.com/electron/simple-samples) - small applications with ideas for taking them further
-- [electron/electron-api-demos](https://github.com/electron/electron-api-demos) - an Electron app that teaches you how to use Electron
-- [hokein/electron-sample-apps](https://github.com/hokein/electron-sample-apps) - small demo apps for the various Electron APIs
+- First, install VSCode:<br>`choco install vscode`<br>
+  You may need to restart the shell for the `PATH` environment changes to be picked up.
+- Go to the project folder and run:<br>`code electron-quick-start.code-workspace`
+- In VSCode, make sure Debugger for Chrome extension is installed. 
+  Go to Extensions (<kbd>Ctrl+Shift+X</kbd>) and type *Debugger for Chrome*, then install it:<br>
+  ![Debugger for Chrome](./art/debugger-for-chrome.png)
+- Set breakpoints in `master.js` and `renderer.js` as desired with <kbd>F9</kbd>.<br>
+  **Don't hit <kbd>F5</kbd> just yet!**
+- Go to Commands (<kbd>Ctrl+Shift+P</kbd> or <kbd>F1</kbd>) and type *Select and Start Debugging*:<br>
+  ![Select and Start Debug](./art/select-and-start-debugging.png)
+- Choose *Electon: All*:<br>
+  ![Electron All](./art/electron-all.png)
+- That should start a debugging session for both Main and Renderer processes. You should be able to hit all breakpoints inside `main()` functions inside `main.js` and `renderer.js`. The selected configuration is remembered, so next time you could just hit <kbd>F5</kbd>.
 
 ## License
 

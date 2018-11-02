@@ -1,52 +1,77 @@
-"use strict";
+'use strict';
 
-// Modules to control application life and create native browser window
-const {app, BrowserWindow} = require('electron');
+async function main() {
+  // Modules to control application life and create native browser window
+  const { app, BrowserWindow, ipcMain } = require('electron');
+  const isDevelopment = require('electron-is-dev');
 
-// Keep a global reference of the window object, if you don't, the window will
-// be closed automatically when the JavaScript object is garbage collected.
-let mainWindow;
+  async function createMainWindow() {
+    // Create the browser window.
+    const window = new BrowserWindow({ width: 800, height: 600 });
 
-function createWindow () {
-  // Create the browser window.
-  mainWindow = new BrowserWindow({width: 800, height: 600});
+    await new Promise((resolve, reject) => {
+      // resolve when when 'did-finish-load' has been fired
+      window.webContents.once('did-finish-load', function () {
+        resolve();
+      });
 
-  // and load the index.html of the app.
-  mainWindow.loadFile('index.html');
+      // or reject if it was closed before then
+      window.once('closed', function () {
+        reject(new Error('Window closed prematurely.'));
+      });
 
-  // Open the DevTools.
+      // initiate the loading
+      window.loadFile(`${__dirname}/index.html`);
+    });
+
+    return window;
+  }
+
+  // 'ready' will be fired when Electron has finished
+  // initialization and is ready to create browser windows.
+  // Some APIs can only be used after this event occurs.
+  await new Promise(resolve => app.once('ready', resolve));
+
+  // exit when all windows are closed and this promise is resolved
+  const terminationPromise = new Promise(resolve => 
+    app.once('window-all-closed', () => resolve()));
+
+  // we expect 'rendererReady' notification from Renderer
+  const rendererPromise = new Promise(resolve =>
+    ipcMain.once('rendererReady', (event, args) => resolve(event.sender)));
+
+  // initiate creating the main window
+  const mainWindowPromise = createMainWindow();
+
+  // await both the window to have been loaded 
+  // and 'rendererReady' notification to have been fired,
+  // while observing premature termination
+  await Promise.race([
+    Promise.all([rendererPromise, mainWindowPromise]),
+    terminationPromise.finally(() => {
+        throw new Error('All windows closed prematurely.'); })
+  ]);
+
+  // keep the mainWindow reference
+  const mainWindow = await mainWindowPromise;
+
+  // notify the Renderer that Main is ready
+  mainWindow.webContents.send("mainReady");
+
+  // from here we can do anything we want
+
+  //
+  // Open the DevTools if desired
   // mainWindow.webContents.openDevTools()
+  //
+  
+  // awaiting terminationPromise here keeps the mainWindow object alive
+  await terminationPromise;
 
-  // Emitted when the window is closed.
-  mainWindow.on('closed', function () {
-    // Dereference the window object, usually you would store windows
-    // in an array if your app supports multi windows, this is the time
-    // when you should delete the corresponding element.
-    mainWindow = null;
-  });
+  app.exit(0);
 }
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
-app.on('ready', createWindow);
-
-// Quit when all windows are closed.
-app.on('window-all-closed', function () {
-  // On OS X it is common for applications and their menu bar
-  // to stay active until the user quits explicitly with Cmd + Q
-  if (process.platform !== 'darwin') {
-    app.quit();
-  }
-})
-
-app.on('activate', function () {
-  // On OS X it's common to re-create a window in the app when the
-  // dock icon is clicked and there are no other windows open.
-  if (mainWindow === null) {
-    createWindow();
-  }
-})
-
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and require them here.
+main().catch(error => {
+  console.log(error);
+  process.exit(1);
+});
