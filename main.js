@@ -11,14 +11,11 @@ async function main() {
 
     await new Promise((resolve, reject) => {
       // resolve when when 'did-finish-load' has been fired
-      window.webContents.once('did-finish-load', function () {
-        resolve();
-      });
+      window.webContents.once('did-finish-load', resolve);
 
       // or reject if it was closed before then
-      window.once('closed', function () {
-        reject(new Error('Window closed prematurely.'));
-      });
+      window.once('closed', () => 
+        reject(new Error('Window closed prematurely.')));
 
       // initiate the loading
       window.loadFile(`${__dirname}/index.html`);
