@@ -2,9 +2,9 @@
 
 This is a fork of **[Minimal Electron Application](https://github.com/electron/electron-quick-start)** to which I added some minimal IPC between Main and Renderer processes, as well as some debugging support based on the **[Electron Debugging (Main and Renderer Process)](https://github.com/Microsoft/vscode-recipes/tree/master/Electron)** VSCode recipe.
 
-It uses promises and `async/await` extensively throughout the Main and Renderer initialization scripts. This provides some nice pseudo-synchronous, pseudo-linear code flow, which facilitates error handling and is easy to step through and debug.
+It uses promises and `async/await` extensively throughout the [Main](https://github.com/noseratio/electron-quick-start/blob/master/main.js) and [Renderer](https://github.com/noseratio/electron-quick-start/blob/master/renderer.js) initialization scripts. This provides some nice pseudo-synchronous, pseudo-linear code flow, which facilitates error handling and is easy to step through and debug.
 
-There's some logic to delay the execution of the scripts inside the Renderer process, to give Chrome Debugger some extra time to initialize and attach to the Renderer. Without it, I was unable not hit some breakpoints I set inside the Renderer. Apparently, I am not the only one experiencing this issue, e.g., here's [a similar question on SO](https://stackoverflow.com/questions/52844870/debugging-electron-renderer-process-with-vscode).
+There's some logic to delay the execution of the scripts inside the Renderer process, to give Chrome Debugger some extra time to initialize and attach to the Renderer. Without it, I was unable to hit some breakpoints I set inside the Renderer. Apparently, I am not the only one experiencing this issue, e.g., here's [a similar question on SO](https://stackoverflow.com/questions/52844870/debugging-electron-renderer-process-with-vscode).
 
 ## How to run it
 
