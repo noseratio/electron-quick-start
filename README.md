@@ -37,7 +37,7 @@ npm start
   **Don't hit <kbd>F5</kbd> just yet!**
 - Go to Commands (<kbd>Ctrl+Shift+P</kbd> or <kbd>F1</kbd>) and type *Select and Start Debugging*:<br>
   ![Select and Start Debug](./art/select-and-start-debugging.png)
-- Choose *Electon: All*:<br>
+- Choose *Electron: All*:<br>
   ![Electron All](./art/electron-all.png)
 - That should start a debugging session for both Main and Renderer processes. You should be able to hit all breakpoints inside `main()` functions inside `main.js` and `renderer.js`. The selected configuration is remembered, so next time you could just hit <kbd>F5</kbd>.
 
